@@ -10,7 +10,7 @@ class DataViewModel with ChangeNotifier {
 
   late List<modelData> dataList;
 
-  JobViewModel() {
+  DataViewModel() {
     dataList = [];
     _state = DataState.IDLE;
     fetchJobs();

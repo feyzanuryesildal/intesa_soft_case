@@ -9,11 +9,7 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  @override
-  void initState() {
-    DataView();
 
-  }
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
