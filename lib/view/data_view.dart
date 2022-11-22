@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:intesa_soft_case/services/fetch_services.dart';
 import 'package:provider/provider.dart';
 
 import '../view_model/data_view_model.dart';
+import 'comment_view.dart';
 
 class DataView extends StatefulWidget {
   const DataView({Key? key}) : super(key: key);
@@ -12,11 +14,8 @@ class DataView extends StatefulWidget {
 
 class _DataViewState extends State<DataView> {
   var size,height,width;
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
+  final WebService httpService = WebService();
+
   @override
   Widget build(BuildContext context) {
     return
@@ -32,7 +31,12 @@ class _DataViewState extends State<DataView> {
 
   AppBar buildAppBar() {
     return AppBar(
-      title: Text('Github Jobs'),
+      title: Text('Sosyal Duvar',style: TextStyle(color: Colors.black),),
+      centerTitle: true,
+      backgroundColor: Colors.transparent,
+      leading: BackButton(
+        color: Colors.black,
+      ),
     );
   }
 
@@ -49,9 +53,9 @@ class _DataViewState extends State<DataView> {
     size = MediaQuery.of(context).size*0.05;
     height = size.height;
     width = size.width;
-    bool num= false;
+    var  count = 1;
     final data = context.read<DataViewModel>().dataList[index];
-    return Card(
+    return Card (
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -101,12 +105,31 @@ class _DataViewState extends State<DataView> {
             Container(
               height: height*2,
               child: ListTile(
-                leading: CircleAvatar(backgroundImage: NetworkImage("${data.comments![1].authorProfileImage}"),),
-                subtitle: Text("${data.comments![1].description}"),
-                title: Text("${data.comments![1].authorName}"),
+                leading: CircleAvatar(backgroundImage: NetworkImage("${data.comments![count].authorProfileImage}"),),
+                subtitle: Text("${data.comments![count].description}"),
+                title: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text("${data.comments![count].authorName}"),
+                    InkWell(child: Icon(Icons.restore_from_trash, color: Colors.yellow,), onTap: ()  {
+
+                         httpService.deletePost(count, count);
+
+                          count = count + 1;
+
+
+
+
+                    },),
+                  ],
+                ),
               ),
             ),
-            Text("diğer yorumları gör...",style: TextStyle(color: Colors.grey),),
+            InkWell(child: Text("diğer yorumları gör...",style: TextStyle(color: Colors.grey),),
+            onTap: (){
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => CommentView(data.comments??0)));
+            },
+            ),
             SizedBox(
               height: height/5,
             ),
@@ -115,8 +138,6 @@ class _DataViewState extends State<DataView> {
               width: width*17,
               child: InputDecorator(
                 decoration: InputDecoration(
-
-
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(50.0),
                   ),
@@ -124,8 +145,6 @@ class _DataViewState extends State<DataView> {
                 child: Row(
                   children: [
                     CircleAvatar(
-
-
                         backgroundImage: NetworkImage("${data.comments![1].authorProfileImage}",)),
                     Text('Konu hakkında bir şeyler yaz...', style: TextStyle( fontSize: 13) ,),
                   ],
@@ -136,9 +155,6 @@ class _DataViewState extends State<DataView> {
             SizedBox(
               height: height/2,
             )
-
-
-
           ],
         )
     );
